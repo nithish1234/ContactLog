@@ -35,12 +35,18 @@ public class CallLogAdapter extends ArrayAdapter<CallLog> {
         TextView callerType = (TextView) rowView.findViewById(R.id.type_of_call);
         TextView callerDuration = (TextView) rowView.findViewById(R.id.duration_of_call);
         TextView callerDate = (TextView) rowView.findViewById(R.id.date_of_call);
+       // TextView callername = (TextView) rowView.findViewById(R.id.name_of_the_caller);
+
+
+
 
 
         callerNumber.setText(callLogs.get(position).getNumber());
         callerType.setText(callLogs.get(position).getTypeOfCall());
         callerDuration.setText(callLogs.get(position).getCallDuration());
         callerDate.setText(callLogs.get(position).getCalledDate());
+        //callername.setText(callLogs.get(position).getCallername());
+
 
         return rowView;
     }

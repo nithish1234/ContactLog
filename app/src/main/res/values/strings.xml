@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Testmobileapp</string>
+    <string name="title_activity_send_sms">SendSms</string>
 </resources>

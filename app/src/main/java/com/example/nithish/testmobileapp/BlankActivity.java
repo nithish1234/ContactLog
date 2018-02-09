@@ -4,27 +4,37 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class BlankActivity extends AppCompatActivity {
     private static final int REQUEST_READ_CALL_LOGS = 1;
     private List<com.example.nithish.testmobileapp.CallLog> callLogs = new ArrayList<>();
+    List<com.example.nithish.testmobileapp.CallLog> missedCallList = new ArrayList<>();
+
     public ListView callLogList;
     public CallLogAdapter callLogAdapter;
+   public int CallerNumber;
+     Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +42,12 @@ public class BlankActivity extends AppCompatActivity {
         setContentView(R.layout.activity_blank);
         callLogList = findViewById(R.id.CallLog);
         Intent fromMainActivitIntent = getIntent();
+
+
         callLogAdapter = new CallLogAdapter(getApplicationContext(), getCallLogAccess());
         callLogList.setAdapter(callLogAdapter);
+        button = findViewById(R.id.sendMessageBtn);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -73,61 +87,65 @@ public class BlankActivity extends AppCompatActivity {
             if (!hasPermission) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALL_LOG},
                         REQUEST_READ_CALL_LOGS);
+
                 getCallLogAccess();
             }
         }
+
+
         Log.i("TAG", "getCallLogAccess: Inside this method");
         Cursor cursor = getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, null);
-        int CallerNumber = cursor.getColumnIndex(CallLog.Calls.NUMBER);
-        // int Callername=cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME);
+        final int CallerNumber = cursor.getColumnIndex(CallLog.Calls.NUMBER);
+        //int Callername=cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
         int CalledDate = cursor.getColumnIndex(CallLog.Calls.DATE);
         int Callduration = cursor.getColumnIndex(CallLog.Calls.DURATION);
         int Calltype = cursor.getColumnIndex(CallLog.Calls.TYPE);
-        StringBuilder CallDetials = new StringBuilder();
+
         while (cursor.moveToNext()) {
             com.example.nithish.testmobileapp.CallLog callLog = new com.example.nithish.testmobileapp.CallLog();
             callLog.setNumber(cursor.getString(CallerNumber));
+            callLog.setCallDuration("duration" + cursor.getString(Callduration));
+            // CalledDateS.format(callLog.setCalledDate(cursor.getString(CalledDate)));            SimpleDateFormat CalledDateS=new SimpleDateFormat("dd/MM/yyyy");
+
             callLog.setCallDuration(cursor.getString(Callduration));
-/*
-            SimpleDateFormat ft = new SimpleDateFormat("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
-*/
-            callLog.setCalledDate((cursor.getString(CalledDate)));
 
 
-            // String CallernameS=cursor.getString(Callername);
-            /*Date dateS = new Date(CalledDateS);*/
             switch (Integer.parseInt(cursor.getString(Calltype))) {
                 case CallLog.Calls.OUTGOING_TYPE:
-                    callLog.setTypeOfCall("Outgoing");
+                    callLog.setTypeOfCall("OutgoingCall");
                     break;
                 case CallLog.Calls.MISSED_TYPE:
-                    callLog.setTypeOfCall("MissedCalls");
+                    callLog.setTypeOfCall("MissedCall");
                     break;
                 case CallLog.Calls.INCOMING_TYPE:
-                    callLog.setTypeOfCall("Incomming Calls");
+                    callLog.setTypeOfCall("Incomming Call");
                     break;
+                case CallLog.Calls.REJECTED_TYPE:
+                    callLog.setTypeOfCall("Rejected Call");
 
 
             }
-            /*if(CallTypeStr=="MissedCalls"){
-                Log.i("info","got missed calls");
-            }*/
+
             callLogs.add(callLog);
-
-
-
-        /*    for (int i=0; i<=CallDetials.length();i++){
-                if(CallTypeStr=="Missedcalls"){
-                    List<String>missedCalls=new ArrayList<>();
-                    missedCalls.addAll()
+            for (int i = 0; i < callLogs.size(); i++) {
+                if (callLogs.get(i).getTypeOfCall().equals("MissedCall")) {
+                    missedCallList.add(callLogs.get(i));
+                    break;
                 }
-        }*/
-
-
+            }
         }
-/*
-        Log.v("Data From Activity", fromMainActivitIntent.getStringExtra("Hai"));
-*/
-        return callLogs;
+
+        return missedCallList;
+
+
+
+
+
     }
+
+
+
+
+
+
 }
