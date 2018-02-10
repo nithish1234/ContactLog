@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,9 +35,11 @@ public class CallLogAdapter extends ArrayAdapter<CallLog> {
         View rowView = inflater.inflate(R.layout.call_log, parent, false);
         TextView callerNumber = (TextView) rowView.findViewById(R.id.ph_number);
         TextView callerType = (TextView) rowView.findViewById(R.id.type_of_call);
+/*
         TextView callerDuration = (TextView) rowView.findViewById(R.id.duration_of_call);
+*/
         TextView callerDate = (TextView) rowView.findViewById(R.id.date_of_call);
-       // TextView callername = (TextView) rowView.findViewById(R.id.name_of_the_caller);
+     //TextView callername = (TextView) rowView.findViewById(R.id.name_of_the_caller);
 
 
 
@@ -43,8 +47,13 @@ public class CallLogAdapter extends ArrayAdapter<CallLog> {
 
         callerNumber.setText(callLogs.get(position).getNumber());
         callerType.setText(callLogs.get(position).getTypeOfCall());
+/*
         callerDuration.setText(callLogs.get(position).getCallDuration());
-        callerDate.setText(callLogs.get(position).getCalledDate());
+*/
+        SimpleDateFormat format=new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+       /* Date date;
+        (Date)callerDate.setText(format.(callLogs.get(position).getCalledDate()));*/
+        callerDate.setText(format.format(callLogs.get(position).getCalledDate()));
         //callername.setText(callLogs.get(position).getCallername());
 
 

@@ -28,13 +28,14 @@ import java.util.List;
 
 public class BlankActivity extends AppCompatActivity {
     private static final int REQUEST_READ_CALL_LOGS = 1;
+    private static final int REQUEST_READ_CONTACTS = 2;
     private List<com.example.nithish.testmobileapp.CallLog> callLogs = new ArrayList<>();
     List<com.example.nithish.testmobileapp.CallLog> missedCallList = new ArrayList<>();
 
     public ListView callLogList;
     public CallLogAdapter callLogAdapter;
-   public int CallerNumber;
-     Button button;
+    public int CallerNumber;
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +43,6 @@ public class BlankActivity extends AppCompatActivity {
         setContentView(R.layout.activity_blank);
         callLogList = findViewById(R.id.CallLog);
         Intent fromMainActivitIntent = getIntent();
-
-
         callLogAdapter = new CallLogAdapter(getApplicationContext(), getCallLogAccess());
         callLogList.setAdapter(callLogAdapter);
         button = findViewById(R.id.sendMessageBtn);
@@ -77,16 +76,42 @@ public class BlankActivity extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request
         }
+        switch (REQUEST_READ_CONTACTS) {
+            case 2: {
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getCallLogAccess();
+                    Log.i("Tag", "onRequestPermissionsResult: inside case 1");
+
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                    Toast.makeText(this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     public List<com.example.nithish.testmobileapp.CallLog> getCallLogAccess() {
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             boolean hasPermission = (ContextCompat.checkSelfPermission(getBaseContext(),
-                    Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED);
+                    Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
+                   );
             if (!hasPermission) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALL_LOG},
                         REQUEST_READ_CALL_LOGS);
+
+
 
                 getCallLogAccess();
             }
@@ -95,21 +120,19 @@ public class BlankActivity extends AppCompatActivity {
 
         Log.i("TAG", "getCallLogAccess: Inside this method");
         Cursor cursor = getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, null);
-        final int CallerNumber = cursor.getColumnIndex(CallLog.Calls.NUMBER);
-        //int Callername=cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+        int CallerNumber = cursor.getColumnIndex(CallLog.Calls.NUMBER);
+
+        /*getContentResolver().query(ContactsContract.Contacts, DISPLAY_NAME
+*/
+       // int Callername = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
         int CalledDate = cursor.getColumnIndex(CallLog.Calls.DATE);
-        int Callduration = cursor.getColumnIndex(CallLog.Calls.DURATION);
         int Calltype = cursor.getColumnIndex(CallLog.Calls.TYPE);
 
         while (cursor.moveToNext()) {
             com.example.nithish.testmobileapp.CallLog callLog = new com.example.nithish.testmobileapp.CallLog();
             callLog.setNumber(cursor.getString(CallerNumber));
-            callLog.setCallDuration("duration" + cursor.getString(Callduration));
-            // CalledDateS.format(callLog.setCalledDate(cursor.getString(CalledDate)));            SimpleDateFormat CalledDateS=new SimpleDateFormat("dd/MM/yyyy");
-
-            callLog.setCallDuration(cursor.getString(Callduration));
-
-
+            callLog.setCalledDate(new Date(Long.valueOf(cursor.getString(CalledDate))));
+            //callLog.setCallername(cursor.getString(Callername));
             switch (Integer.parseInt(cursor.getString(Calltype))) {
                 case CallLog.Calls.OUTGOING_TYPE:
                     callLog.setTypeOfCall("OutgoingCall");
@@ -130,22 +153,40 @@ public class BlankActivity extends AppCompatActivity {
             for (int i = 0; i < callLogs.size(); i++) {
                 if (callLogs.get(i).getTypeOfCall().equals("MissedCall")) {
                     missedCallList.add(callLogs.get(i));
-                    break;
                 }
+
             }
         }
 
         return missedCallList;
 
 
-
-
-
     }
+/*
+    private void retrieveContactName() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            boolean hasPermission = (ContextCompat.checkSelfPermission(getBaseContext(),
+                    Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED);
+            if (!hasPermission) {
+
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS},
+                        REQUEST_READ_CONTACTS);
 
 
 
+            }
+        }
 
+        Cursor cursor = getContentResolver().query(Uri.parse(CallLog.Calls.CACHED_NAME), null, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+        }
+
+        cursor.close();
+
+
+    }*/
 
 
 }

@@ -8,29 +8,29 @@ import java.util.Date;
 
 public class CallLog {
     String number;
-    //String Callername;
+   // String  callerName;
     String callDuration;
-    String calledDate;
+    Date calledDate;
     String typeOfCall;
 
 
 
-    public String getCalledDate() {
-        return calledDate;
+    public Date getCalledDate() {
+        return  calledDate;
     }
 
-    public void setCalledDate(String calledDate) {
+    public void setCalledDate(Date calledDate) {
         this.calledDate = calledDate;
     }
 
 
-   /* public String getCallername() {
-        return Callername;
-    }
-
-    public void setCallername(String callername) {
-        Callername = callername;
-    }*/
+//    public String getCallername() {
+//        return callerName;
+//    }
+//
+//    public void setCallername(String callerName) {
+//        callerName = callerName;
+//    }
 
 
     public String getNumber() {

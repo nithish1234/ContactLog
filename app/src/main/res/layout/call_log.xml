@@ -21,12 +21,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textColor="@android:color/black" />
-
     <TextView
+    android:id="@+id/name_of_the_caller"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textColor="@android:color/black" />
+
+<!--    <TextView
         android:id="@+id/duration_of_call"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black" />-->
     <Button
         android:id="@+id/sendMessageBtn"
         android:layout_width="wrap_content"
@@ -40,11 +45,7 @@
         android:textColorLink="@android:color/holo_blue_light"
          />
 
-    <!--<TextView
-        android:id="@+id/name_of_the_caller"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textColor="@android:color/black" />-->
+
 
 <!--
     <TextView
